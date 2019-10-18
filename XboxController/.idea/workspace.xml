@@ -2,7 +2,6 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="a904cc15-20eb-44ae-ad00-3f97b4a96519" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/xboxcontroller.py" beforeDir="false" afterPath="$PROJECT_DIR$/xboxcontroller.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -104,7 +103,7 @@
       <workItem from="1570826869482" duration="5622000" />
       <workItem from="1570835853056" duration="292000" />
       <workItem from="1570846748810" duration="40000" />
-      <workItem from="1571430407378" duration="2660000" />
+      <workItem from="1571430407378" duration="3261000" />
     </task>
     <task id="LOCAL-00001" summary="Push">
       <created>1571430878287</created>
@@ -113,7 +112,14 @@
       <option name="project" value="LOCAL" />
       <updated>1571430878287</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="Added python class for controller">
+      <created>1571433089705</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1571433089705</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -132,10 +138,11 @@
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="Push" />
-    <option name="LAST_COMMIT_MESSAGE" value="Push" />
+    <MESSAGE value="Added python class for controller" />
+    <option name="LAST_COMMIT_MESSAGE" value="Added python class for controller" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/XboxController$xinput.coverage" NAME="xinput Coverage Results" MODIFIED="1570827024133" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/XboxController$xboxcontroller.coverage" NAME="xboxcontroller Coverage Results" MODIFIED="1571432965524" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/XboxController$xboxcontroller.coverage" NAME="xboxcontroller Coverage Results" MODIFIED="1571433555276" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
 </project>

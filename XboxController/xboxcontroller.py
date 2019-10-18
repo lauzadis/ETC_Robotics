@@ -68,12 +68,21 @@ def process_input(input, object):
     # Input will be a tuple, joystick and value, or button and value
     # print(input)
 
-    print(input, object.get_mode())
+    # print(input, object.get_mode())
     if input[0] is 'button':
         if input[1] == 3:
             object.set_mode('DIG')
         elif input[1] == 2:
             object.set_mode('DRIVE')
+
+    if input[0] is 'axis':
+        if input[1] is 'l_thumb_y':  # If it's the left joystick, we only want the y-values
+            print('Y-Value:', input[2])
+        elif input[1] is 'r_thumb_x':
+            print('X-Value:', input[2])
+
+
+
 
 
 
