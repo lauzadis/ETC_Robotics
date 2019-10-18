@@ -81,21 +81,13 @@ def process_input(input):
         #Otherwise, scale the value
 
 
-
-        if True:
-            pass
-        elif input[1] is 'l_thumb_y':
-            print('Y:', value)
-        elif input[1] is 'r_thumb_x':
-            print('X:', value)
-
-
-def bluetooth(id):
-    bd_addr =
-    sock = bluetooth.BluetoothSocket(bluetooth.RFCOMM)
-    sock.connect((bd_addr, port))
-    print
-    'Connected'
+#
+# def bluetooth(id):
+#     bd_addr =
+#     sock = bluetooth.BluetoothSocket(bluetooth.RFCOMM)
+#     sock.connect((bd_addr, port))
+#     print
+#     'Connected'
 
 
 if __name__ == '__main__':
