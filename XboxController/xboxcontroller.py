@@ -76,10 +76,18 @@ def process_input(input, object):
             object.set_mode('DRIVE')
 
     if input[0] is 'axis':
+
+        MAX_Y_VAL = 0.475
+        MIN_Y_VAL = -0.475
+        MAX_X_VAL = 0.475
+        MIN_X_VAL = -0.475
+
         if input[1] is 'l_thumb_y':  # If it's the left joystick, we only want the y-values
-            print('Y-Value:', input[2])
-        elif input[1] is 'r_thumb_x':
-            print('X-Value:', input[2])
+            if not MIN_Y_VAL < input[2] < MAX_Y_VAL:
+                print('Y: Max or Min')
+        elif input[1] is 'r_thumb_x':  # Right joystick -> x values
+            if not MIN_X_VAL < input[2] < MIN_X_VAL:
+                print('X: Max or Min')
 
 
 
