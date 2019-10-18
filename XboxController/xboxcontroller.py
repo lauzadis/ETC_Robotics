@@ -66,27 +66,30 @@ def process_input(input, object):
     # Left joystick: Y values: Move forward, backward
     # Right joystick: X values: Rotate left, right
     # Input will be a tuple, joystick and value, or button and value
-    # print(input)
 
-    # print(input, object.get_mode())
-    if input[0] is 'button':
-        if input[1] == 3:
+    type = input[0]
+    id = input[1]
+    value = input[2]
+
+    if type is 'button':
+        if id == 3:
             object.set_mode('DIG')
-        elif input[1] == 2:
+        elif id == 2:
             object.set_mode('DRIVE')
 
-    if input[0] is 'axis':
+    if type is 'axis':
 
         MAX_Y_VAL = 0.475
         MIN_Y_VAL = -0.475
         MAX_X_VAL = 0.475
         MIN_X_VAL = -0.475
 
-        if input[1] is 'l_thumb_y':  # If it's the left joystick, we only want the y-values
-            if not MIN_Y_VAL < input[2] < MAX_Y_VAL:
-                print('Y: Max or Min')
-        elif input[1] is 'r_thumb_x':  # Right joystick -> x values
-            if not MIN_X_VAL < input[2] < MIN_X_VAL:
+        if id is 'l_thumb_y':  # If it's the left joystick, we only want the y-values
+            if not MIN_Y_VAL < value < MAX_Y_VAL:
+                value = 0.5
+
+        elif id is 'r_thumb_x':  # Right joystick -> x values
+            if not MIN_X_VAL < value < MAX_X_VAL:
                 print('X: Max or Min')
 
 
