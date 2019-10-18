@@ -78,7 +78,7 @@ def process_input(input, object):
             object.set_mode('DRIVE')
 
     if type is 'axis':
-
+        # Max and Min values for the Joysticks X and Y values.
         MAX_Y_VAL = 0.475
         MIN_Y_VAL = -0.475
         MAX_X_VAL = 0.475
