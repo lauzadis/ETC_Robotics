@@ -1,54 +1,50 @@
 import socket
 from inputs import devices, get_gamepad
 from controller import Controller
-import time
-import inputs
-import numpy as np
 
-DEBUG = True
+MAX_RPM = 200  # max value that we want to send to the motor
+MAX_CONTROLLER_VALUE = 32768  # max value that the xbox controller reads
+NEW_EVENT_THRESHOLD = 0.075  # percent delta to consider the incoming event a new event
+DEADZONE_THRESHOLD = 0.10 # percent of the MAX_CONTROLLER_VALUE needed to consider outside of the deadzone
 
-MAX_RPM = 7500
-MAX_CONTROLLER_VALUE = 32768
-UDP_IP = '192.168.1.73'
-UDP_PORT = 12345
+NUC_IP = '192.168.1.73'
+NUC_PORT = 12345
 
-sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-controller = Controller()
-print(controller.get_mode())
+key = {'ABS_Y': 'left', 
+       'ABS_RY': 'right'
+       }
 
 
-previous_event = inputs.InputEvent(device=None, event_info={'ev_type':'Absolute', 'state':0,'timestamp':1580619544.768838,'code':'ABS_Y'})
-# print('Previous Event', previous_event.state)
+def main():
+    sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    controller = Controller()
+    print(controller.get_mode())
 
-while True:
-    events = get_gamepad()        
-    
-    for event in events:
-        if event.code == 'ABS_Y' or 'ABS_RY':
-            
-            if -5000 < event.state < 5000:
-                event.state = 0
-                        
-            if np.isclose(event.state, previous_event.state, rtol=0.1, atol=0.1):
-                # print('same event')
-                break
-            # else:
-                # print('Previous:', previous_event.state, 'New:', event.state)
+    previous_event = 0
 
-            
-            scaled_state = event.state / MAX_CONTROLLER_VALUE * MAX_RPM   # scale down the input
+    while True:
+        events = get_gamepad()        
+        
+        for event in events:
+            if event.code == 'ABS_Y' or event.code == 'ABS_RY':
+                
+                # Deadzone check
+                if -1*MAX_CONTROLLER_VALUE*DEADZONE_THRESHOLD < event.state < MAX_CONTROLLER_VALUE*DEADZONE_THRESHOLD:
+                    event.state = 0
 
-            if event.code == 'ABS_Y':  # Left Joystick
-                data = ('left ' + str(scaled_state)).encode()
-            elif event.code == 'ABS_RY':  # Right Joystick
-                data = ('right ' + str(scaled_state)).encode()
+                # New event check
+                delta = abs(previous_event - event.state)
+                if -1*NEW_EVENT_THRESHOLD*MAX_CONTROLLER_VALUE < delta < NEW_EVENT_THRESHOLD * MAX_CONTROLLER_VALUE:
+                    break
 
-            print(data)
-            sock.sendto(data, (UDP_IP, UDP_PORT))
-            previous_event = event
+                else:  # command is new and outside of the deadzone
+                    scaled_state = event.state / MAX_CONTROLLER_VALUE * MAX_RPM * -1   # scale down the controller input to our maximum motor input
+                    command = (key[event.code] + ' ' + str(scaled_state)).encode()
+                    previous_event = event.state
 
-    
+                print(command)
+                sock.sendto(command, (NUC_IP, NUC_PORT))
+                
 
-
-
-
+if __name__ == '__main__':
+    main()
