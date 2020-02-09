@@ -1,6 +1,8 @@
 import socket
 from inputs import devices, get_gamepad
 from controller import Controller
+import pyttsx3
+import random
 
 MAX_RPM = 200  # max value that we want to send to the motor
 MAX_CONTROLLER_VALUE = 32768  # max value that the xbox controller reads
@@ -16,6 +18,10 @@ key = {'ABS_Y': 'left',
 
 
 def main():
+    tts = pyttsx3.init()
+    tts.setProperty('rate',150)
+    # tts.setProperty('volume', 1)
+
     sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     controller = Controller()
     print(controller.get_mode())
@@ -45,6 +51,28 @@ def main():
                 print(command)
                 sock.sendto(command, (NUC_IP, NUC_PORT))
                 
+            elif event.code == 'ABS_HAT0Y':
+                if event.state == -1:  # DPAD Up
+                    tts.say('My name is Canyonero')
+                    tts.runAndWait()
+                
+                elif event.state == 1:  # Dpad Down
+                    tts.say('What is your name?')
+                    tts.runAndWait()
+
+            elif event.code == 'ABS_HAT0X':
+                if event.state == -1:  # DPAD Left
+                    tts.say('Pardon me.')
+                    tts.runAndWait()
+
+                elif event.state == 1:  # DPAD Right
+                    funny = [
+                             'Mechanical advantage'
+                             ]
+
+                    tts.say(random.choice(funny))
+                    tts.runAndWait()
+            
 
 if __name__ == '__main__':
     main()
