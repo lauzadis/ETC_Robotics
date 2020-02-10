@@ -4,75 +4,53 @@ from controller import Controller
 import pyttsx3
 import random
 
+import subprocess
+
 MAX_RPM = 200  # max value that we want to send to the motor
 MAX_CONTROLLER_VALUE = 32768  # max value that the xbox controller reads
 NEW_EVENT_THRESHOLD = 0.075  # percent delta to consider the incoming event a new event
 DEADZONE_THRESHOLD = 0.10 # percent of the MAX_CONTROLLER_VALUE needed to consider outside of the deadzone
 
-NUC_IP = '192.168.1.73'
+# NUC_IP = '192.168.1.73'
+NUC_IP = '10.0.0.152'
 NUC_PORT = 12345
 
-key = {'ABS_Y': 'left', 
-       'ABS_RY': 'right'
+key = {'ABS_Y': 'L', 
+       'ABS_RY': 'R'
        }
 
 
 def main():
     tts = pyttsx3.init()
     tts.setProperty('rate',150)
-    # tts.setProperty('volume', 1)
 
-    sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    motor_sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+
     controller = Controller()
     print(controller.get_mode())
 
     previous_event = 0
+    bytes_sent = 0
+
 
     while True:
         events = get_gamepad()        
         
         for event in events:
-            if event.code == 'ABS_Y' or event.code == 'ABS_RY':
-                
-                # Deadzone check
-                if -1*MAX_CONTROLLER_VALUE*DEADZONE_THRESHOLD < event.state < MAX_CONTROLLER_VALUE*DEADZONE_THRESHOLD:
-                    event.state = 0
+            command = controller.get_command(event)
+            if command is not None:
+                if command.decode() == 'C1':  # Create Camera Socket
+                    motor_sock.sendto(command, (NUC_IP, NUC_PORT))
+                    camera = subprocess.Popen('./server_cv.py')
+                    controller.camera_feed = True
 
-                # New event check
-                delta = abs(previous_event - event.state)
-                if -1*NEW_EVENT_THRESHOLD*MAX_CONTROLLER_VALUE < delta < NEW_EVENT_THRESHOLD * MAX_CONTROLLER_VALUE:
-                    break
+                elif command.decode() == 'C0':
+                    motor_sock.sendto(command, (NUC_IP, NUC_PORT))
+                    camera.terminate()
+                    controller.camera_feed = False
 
-                else:  # command is new and outside of the deadzone
-                    scaled_state = event.state / MAX_CONTROLLER_VALUE * MAX_RPM * -1   # scale down the controller input to our maximum motor input
-                    command = (key[event.code] + ' ' + str(scaled_state)).encode()
-                    previous_event = event.state
-
-                print(command)
-                sock.sendto(command, (NUC_IP, NUC_PORT))
-                
-            elif event.code == 'ABS_HAT0Y':
-                if event.state == -1:  # DPAD Up
-                    tts.say('My name is Canyonero')
-                    tts.runAndWait()
-                
-                elif event.state == 1:  # Dpad Down
-                    tts.say('What is your name?')
-                    tts.runAndWait()
-
-            elif event.code == 'ABS_HAT0X':
-                if event.state == -1:  # DPAD Left
-                    tts.say('Pardon me.')
-                    tts.runAndWait()
-
-                elif event.state == 1:  # DPAD Right
-                    funny = [
-                             'Mechanical advantage'
-                             ]
-
-                    tts.say(random.choice(funny))
-                    tts.runAndWait()
-            
-
+                else:
+                    print(command)
+                    motor_sock.sendto(command, (NUC_IP, NUC_PORT))
 if __name__ == '__main__':
     main()

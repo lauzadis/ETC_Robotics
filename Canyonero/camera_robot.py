@@ -1,43 +1,38 @@
+#!/home/codetc/anaconda3/bin/python
+
 import cv2
-import io
 import socket
 import struct
 import time
 import pickle
-import zlib
-import time
-
 
 fps = 10
-previous = 0 
+previous_time = 0 
+
+HOST_IP = '10.0.0.83'
+HOST_PORT = 8485
 
 client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-client_socket.connect(('10.0.0.83', 8485))
-connection = client_socket.makefile('wb')
+client_socket.connect((HOST_IP, HOST_PORT))
 
 cam = cv2.VideoCapture(0)
-
-cam.set(3, 320);
-cam.set(4, 240);
-
-img_counter = 0
+cam.set(cv2.CAP_PROP_FRAME_WIDTH, 320);  # Width
+cam.set(cv2.CAP_PROP_FRAME_HEIGHT, 240);  # Height
 
 encode_param = [int(cv2.IMWRITE_JPEG_QUALITY), 90]
 
 while True:
-    elapsed_time = time.time() - previous
+    elapsed_time = time.time() - previous_time
     ret, frame = cam.read()
     
-    if elapsed_time > 1./fps:
-        previous = time.time()
+    if elapsed_time > 1/fps:
+        previous_time = time.time()
         result, frame = cv2.imencode('.jpg', frame, encode_param)  
-#    data = zlib.compress(pickle.dumps(frame, 0))
+
         data = pickle.dumps(frame, 0)
         size = len(data)
 
-
-        print("{}: {}".format(img_counter, size))
         client_socket.sendall(struct.pack(">L", size) + data)
-        img_counter += 1
 
 cam.release()
+client_socket.close()
