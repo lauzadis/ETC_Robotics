@@ -7,3 +7,6 @@ Make sure to set the device port in `sample.cpp` to match what your computer see
 
 # Run
 `sudo ./sample.o` (need sudo because it needs to find the /dev/ file)
+
+# Semi-Secrets (shh)
+The password to the robonuc user on the NUC is `etcdupage`.
